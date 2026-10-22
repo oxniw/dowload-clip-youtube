@@ -12,6 +12,7 @@ Local users and developers who need an intuitive, secure, and self-hosted tool f
 - **Extraction Engine**: `yt-dlp` Python library behind an isolated adapter layer
 - **Media Processing**: System `ffmpeg` called via secure, non-shell subprocess execution
 - **Frontend**: Lightweight vanilla HTML5, CSS3, and modern JavaScript (no Node.js build pipeline required)
+- **Theme & UI**: Minimalist monochrome (black and white) design
 - **Real-Time Updates**: Server-Sent Events (SSE) streaming progress (percentage, download speed, ETA)
 - **Modularity**: Strict function-per-file separation compliant with `/write-script-separated-file-function`
 - **Delivery Strategy**: Dual delivery saving media to the local `downloads/` directory while offering direct in-browser download triggers

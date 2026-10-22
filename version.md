@@ -10,6 +10,7 @@
 - Time range clipping capability via non-shell FFmpeg execution.
 - Security enforcement against SSRF, directory traversal, and command injection.
 - Modern single-page web interface with responsive dark mode and immediate browser download triggers.
+- Redesigned visual theme to high-contrast minimalist black and white monochrome.
 - Cloud deployment configurations for Render (`Dockerfile`, `render.yaml`) and Vercel (`vercel.json`, `asgi.py`).
 - Dynamic port and host binding reading `PORT` and `HOST` environment variables.
 - Dynamic storage resolution defaulting to `/tmp/downloads` in serverless environments.
