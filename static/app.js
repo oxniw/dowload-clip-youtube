@@ -4,13 +4,15 @@ let currentEventSource = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   initSystemStatus();
+  initCookieModal();
   initFormListeners();
   refreshDownloadsList();
 });
 
-// Check FFmpeg and system environment
+// Check FFmpeg, Cookies and system environment
 async function initSystemStatus() {
   const badge = document.getElementById("system-badge");
+  const cookieBtn = document.getElementById("cookie-btn");
   try {
     const res = await fetch("/api/system-status");
     const data = await res.json();
@@ -22,10 +24,89 @@ async function initSystemStatus() {
       badge.innerHTML = '<span class="status-dot"></span> FFmpeg Missing';
       badge.title = "Clipping and format merging require FFmpeg on PATH";
     }
+
+    if (data.cookies_configured) {
+      cookieBtn.innerHTML = '<span class="status-dot"></span> Cookies: Active';
+      cookieBtn.style.borderColor = "var(--border-highlight)";
+    } else {
+      cookieBtn.innerHTML = '<span class="status-dot"></span> Cookies: Off';
+    }
   } catch (e) {
     badge.className = "system-badge badge-warn";
     badge.innerHTML = '<span class="status-dot"></span> Offline';
   }
+}
+
+// Wire Cookie Modal controls
+function initCookieModal() {
+  const cookieBtn = document.getElementById("cookie-btn");
+  const modal = document.getElementById("cookie-modal");
+  const closeBtn = document.getElementById("modal-close-btn");
+  const saveBtn = document.getElementById("save-cookies-btn");
+  const clearBtn = document.getElementById("clear-cookies-btn");
+  const fileUpload = document.getElementById("cookie-file-upload");
+  const cookieInput = document.getElementById("cookie-input");
+
+  cookieBtn.addEventListener("click", () => {
+    modal.classList.remove("hidden");
+  });
+
+  closeBtn.addEventListener("click", () => {
+    modal.classList.add("hidden");
+  });
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) modal.classList.add("hidden");
+  });
+
+  fileUpload.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      cookieInput.value = evt.target.result;
+    };
+    reader.readAsText(file);
+  });
+
+  saveBtn.addEventListener("click", async () => {
+    const content = cookieInput.value.trim();
+    if (!content) {
+      alert("Please paste cookie file contents or upload a file first.");
+      return;
+    }
+
+    saveBtn.disabled = true;
+    try {
+      const res = await fetch("/api/cookies", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || "Failed to save cookies");
+      modal.classList.add("hidden");
+      initSystemStatus();
+      alert("Cookies saved successfully. YouTube datacenter requests will now authenticate.");
+    } catch (err) {
+      alert("Error: " + err.message);
+    } finally {
+      saveBtn.disabled = false;
+    }
+  });
+
+  clearBtn.addEventListener("click", async () => {
+    if (!confirm("Remove saved cookies?")) return;
+    try {
+      await fetch("/api/cookies", { method: "DELETE" });
+      cookieInput.value = "";
+      fileUpload.value = "";
+      modal.classList.add("hidden");
+      initSystemStatus();
+    } catch (e) {
+      alert("Failed to remove cookies");
+    }
+  });
 }
 
 // Wire form, button, and input handlers

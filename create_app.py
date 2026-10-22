@@ -16,7 +16,7 @@ from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from config import DOWNLOADS_DIR, STATIC_DIR
+from config import COOKIES_FILE, DOWNLOADS_DIR, STATIC_DIR
 from execute_download import execute_download
 from fetch_video_info import fetch_video_info
 from parse_time_range import parse_time_range
@@ -40,6 +40,10 @@ class DownloadRequest(BaseModel):
     total_duration: Optional[float] = None
 
 
+class CookiePayload(BaseModel):
+    content: str
+
+
 def create_app() -> FastAPI:
     """
     Creates and wires the FastAPI application.
@@ -57,11 +61,35 @@ def create_app() -> FastAPI:
     @app.get("/api/system-status")
     def get_system_status():
         ffmpeg_path = shutil.which("ffmpeg")
+        has_cookies = COOKIES_FILE.exists() and COOKIES_FILE.stat().st_size > 0
         return {
             "ffmpeg_available": bool(ffmpeg_path),
             "ffmpeg_path": ffmpeg_path or "Not found",
+            "cookies_configured": has_cookies,
             "downloads_dir": str(DOWNLOADS_DIR),
         }
+
+    @app.get("/api/cookies/status")
+    def api_cookie_status():
+        exists = COOKIES_FILE.exists() and COOKIES_FILE.stat().st_size > 0
+        return {
+            "configured": exists,
+            "size_bytes": COOKIES_FILE.stat().st_size if exists else 0,
+        }
+
+    @app.post("/api/cookies")
+    def api_save_cookies(payload: CookiePayload):
+        text = payload.content.strip()
+        if not text:
+            raise HTTPException(status_code=400, detail="Cookie content cannot be empty.")
+        COOKIES_FILE.write_text(text, encoding="utf-8")
+        return {"success": True, "message": "Cookies saved successfully."}
+
+    @app.delete("/api/cookies")
+    def api_delete_cookies():
+        if COOKIES_FILE.exists():
+            COOKIES_FILE.unlink()
+        return {"success": True, "message": "Cookies deleted."}
 
     @app.post("/api/info")
     def api_video_info(payload: InfoRequest):

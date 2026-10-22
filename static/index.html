@@ -23,8 +23,13 @@
           <p class="subtitle">Fast, secure local media extraction with live progress</p>
         </div>
       </div>
-      <div id="system-badge" class="system-badge badge-checking">
-        <span class="status-dot"></span> Checking FFmpeg...
+      <div class="header-actions">
+        <button id="cookie-btn" class="btn btn-outline-sm" type="button">
+          <span class="status-dot"></span> Cookies: Off
+        </button>
+        <div id="system-badge" class="system-badge badge-checking">
+          <span class="status-dot"></span> Checking FFmpeg...
+        </div>
       </div>
     </header>
 
@@ -202,6 +207,32 @@
         <p class="empty-notice">No downloads yet.</p>
       </div>
     </section>
+  </div>
+
+  <!-- Cookie Modal -->
+  <div id="cookie-modal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>YouTube Cookies (Bypass Cloud Bot Block)</h3>
+        <button id="modal-close-btn" class="btn-close">&times;</button>
+      </div>
+      <p class="section-desc">
+        YouTube blocks cloud datacenter IPs like Render unless authenticated cookies are supplied.
+      </p>
+      <div class="cookie-help-steps">
+        <p>1. Export your YouTube session cookies with the <strong>Get cookies.txt LOCALLY</strong> browser extension.</p>
+        <p>2. Paste the text below or upload the <code>cookies.txt</code> file.</p>
+        <p><em>(Tip: You can also set a Render environment variable named <code>YOUTUBE_COOKIES</code>)</em></p>
+      </div>
+      <textarea id="cookie-input" rows="8" placeholder="# Netscape HTTP Cookie File&#10;.youtube.com  TRUE  /  TRUE  ..."></textarea>
+      <div class="modal-file-row">
+        <input type="file" id="cookie-file-upload" accept=".txt">
+      </div>
+      <div class="modal-actions">
+        <button id="save-cookies-btn" class="btn btn-primary">Save Cookies</button>
+        <button id="clear-cookies-btn" class="btn btn-outline-sm">Clear Cookies</button>
+      </div>
+    </div>
   </div>
 
   <script src="app.js"></script>

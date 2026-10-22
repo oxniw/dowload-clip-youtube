@@ -39,6 +39,15 @@ ALLOWED_SCHEMES = ("https", "http")
 
 # Format Options
 COOKIES_FILE = BASE_DIR / "cookies.txt"
+
+# Auto-inject cookies from environment variables for Render/cloud deployments
+raw_cookies = os.environ.get("YOUTUBE_COOKIES") or os.environ.get("YT_COOKIES")
+if raw_cookies:
+    try:
+        COOKIES_FILE.write_text(raw_cookies, encoding="utf-8")
+    except Exception:
+        pass
+
 SUPPORTED_VIDEO_FORMATS = ("mp4", "mkv")
 SUPPORTED_AUDIO_FORMATS = ("mp3", "m4a", "wav", "flac")
 SUPPORTED_QUALITIES = ("best", "1080", "720", "480", "360")

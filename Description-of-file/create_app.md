@@ -7,7 +7,10 @@ Initializes the FastAPI application, mounts API routes, configures CORS, and ser
 - `create_app() -> FastAPI`
   - **Description**: Factory function returning the fully configured FastAPI web application.
   - **Routes Exposed**:
-    - `GET /api/system-status`: Reports FFmpeg availability and storage directory.
+    - `GET /api/system-status`: Reports FFmpeg availability, cookie status, and storage directory.
+    - `GET /api/cookies/status`: Reports whether cookies are configured and file size.
+    - `POST /api/cookies`: Saves YouTube authentication cookies to disk.
+    - `DELETE /api/cookies`: Clears configured cookies.
     - `POST /api/info`: Fetches video metadata and available qualities for preview.
     - `POST /api/download`: Validates parameters and triggers background download.
     - `GET /api/progress/{job_id}`: Returns immediate JSON progress snapshot.

@@ -13,6 +13,7 @@
 - Redesigned visual theme to high-contrast minimalist black and white monochrome.
 - Resolved YouTube "Sign in to confirm you're not a bot" challenge by routing requests through `android` and `ios` client engines.
 - Added optional `cookies.txt` auto-detection and excluded internal `.gitkeep` files from the downloads list.
+- Added in-app cookie manager and `YOUTUBE_COOKIES` environment variable injection to bypass YouTube bot defense on Render datacenter IPs.
 - Cloud deployment configurations for Render (`Dockerfile`, `render.yaml`) and Vercel (`vercel.json`, `asgi.py`).
 - Dynamic port and host binding reading `PORT` and `HOST` environment variables.
 - Dynamic storage resolution defaulting to `/tmp/downloads` in serverless environments.
