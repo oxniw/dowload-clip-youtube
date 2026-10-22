@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Downloader & Clipper</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="logo-group">
+        <div class="logo-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+        </div>
+        <div>
+          <h1>YouTube Downloader & Clipper</h1>
+          <p class="subtitle">Fast, secure local media extraction with live progress</p>
+        </div>
+      </div>
+      <div id="system-badge" class="system-badge badge-checking">
+        <span class="status-dot"></span> Checking FFmpeg...
+      </div>
+    </header>
+
+    <!-- URL Input Section -->
+    <section class="card input-section">
+      <form id="url-form">
+        <label for="video-url">YouTube Video or Short URL</label>
+        <div class="url-input-wrapper">
+          <input
+            type="url"
+            id="video-url"
+            placeholder="https://www.youtube.com/watch?v=..."
+            required
+            autocomplete="off"
+          />
+          <button type="submit" id="fetch-btn" class="btn btn-primary">
+            <span>Inspect Video</span>
+          </button>
+        </div>
+      </form>
+      <div id="url-error" class="error-banner hidden"></div>
+    </section>
+
+    <!-- Video Preview & Configuration Section -->
+    <section id="config-section" class="card hidden">
+      <div class="video-preview">
+        <img id="preview-thumbnail" src="" alt="Thumbnail" />
+        <div class="video-meta">
+          <h2 id="preview-title">Video Title</h2>
+          <p id="preview-author" class="meta-author">Channel</p>
+          <div class="meta-tags">
+            <span id="preview-duration" class="tag">00:00</span>
+            <span id="preview-views" class="tag">0 views</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="options-grid">
+        <!-- Media Type Selector -->
+        <div class="option-card">
+          <h3>1. Output Format</h3>
+          <div class="radio-toggle">
+            <label class="toggle-option">
+              <input type="radio" name="media-type" value="video" checked>
+              <span>Video (MP4 / MKV)</span>
+            </label>
+            <label class="toggle-option">
+              <input type="radio" name="media-type" value="audio">
+              <span>Audio Only</span>
+            </label>
+          </div>
+
+          <div id="video-options" class="sub-options">
+            <label for="video-quality">Quality</label>
+            <select id="video-quality">
+              <option value="best">Best Available</option>
+              <option value="1080">1080p Full HD</option>
+              <option value="720">720p HD</option>
+              <option value="480">480p</option>
+              <option value="360">360p</option>
+            </select>
+
+            <label for="video-container" style="margin-top: 10px;">Container</label>
+            <select id="video-container">
+              <option value="mp4" selected>MP4</option>
+              <option value="mkv">MKV</option>
+            </select>
+          </div>
+
+          <div id="audio-options" class="sub-options hidden">
+            <label for="audio-format">Audio Format</label>
+            <select id="audio-format">
+              <option value="mp3" selected>MP3 (Universal)</option>
+              <option value="m4a">M4A (AAC)</option>
+              <option value="wav">WAV (Lossless)</option>
+              <option value="flac">FLAC (Lossless)</option>
+            </select>
+
+            <label for="audio-bitrate" style="margin-top: 10px;">Bitrate</label>
+            <select id="audio-bitrate">
+              <option value="320k">320 kbps (Highest)</option>
+              <option value="256k">256 kbps (High)</option>
+              <option value="192k" selected>192 kbps (Standard)</option>
+              <option value="128k">128 kbps (Light)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Trimming & Clipping -->
+        <div class="option-card">
+          <div class="card-header-toggle">
+            <h3>2. Clip / Trim (Optional)</h3>
+            <label class="switch">
+              <input type="checkbox" id="enable-clip">
+              <span class="slider round"></span>
+            </label>
+          </div>
+          <p class="section-desc">Download only a specific range instead of the full video.</p>
+
+          <div id="clip-controls" class="clip-inputs disabled-area">
+            <div class="input-col">
+              <label for="start-time">Start Time</label>
+              <input type="text" id="start-time" placeholder="00:00:00 or 00:00" disabled>
+            </div>
+            <div class="input-col">
+              <label for="end-time">End Time</label>
+              <input type="text" id="end-time" placeholder="00:01:30 or 01:30" disabled>
+            </div>
+          </div>
+          <small id="clip-hint" class="hint-text">Formats accepted: MM:SS or HH:MM:SS or seconds</small>
+        </div>
+      </div>
+
+      <div class="action-bar">
+        <button id="download-btn" class="btn btn-success btn-large">
+          <span>Start Download</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Real-Time Progress Section -->
+    <section id="progress-section" class="card hidden">
+      <div class="progress-header">
+        <div class="progress-title-group">
+          <h3 id="progress-status-title">Downloading media...</h3>
+          <span id="progress-status-badge" class="badge">In Progress</span>
+        </div>
+        <div class="progress-percentage" id="progress-percentage">0%</div>
+      </div>
+
+      <div class="progress-bar-container">
+        <div id="progress-bar-fill" class="progress-bar-fill" style="width: 0%;"></div>
+      </div>
+
+      <div class="progress-stats">
+        <div class="stat-item">
+          <span class="stat-label">Speed</span>
+          <span class="stat-value" id="stat-speed">--</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">ETA</span>
+          <span class="stat-value" id="stat-eta">--</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">File</span>
+          <span class="stat-value stat-filename" id="stat-filename">Preparing...</span>
+        </div>
+      </div>
+
+      <!-- Completion Actions -->
+      <div id="completion-actions" class="completion-box hidden">
+        <div class="completion-message">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          <div>
+            <strong>Download ready!</strong>
+            <p>Saved locally to the <code>downloads/</code> folder.</p>
+          </div>
+        </div>
+        <a id="browser-download-link" class="btn btn-primary" download>
+          <span>Save to Device</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Downloads History Drawer -->
+    <section class="card history-section">
+      <div class="history-header">
+        <h3>Local Downloads</h3>
+        <button id="refresh-downloads-btn" class="btn btn-outline-sm">Refresh List</button>
+      </div>
+      <div id="downloads-list" class="downloads-list">
+        <p class="empty-notice">No downloads yet.</p>
+      </div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

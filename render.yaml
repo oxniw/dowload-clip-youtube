@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: youtube-downloader-clipper
+    env: docker
+    plan: starter
+    region: oregon
+    dockerfilePath: Dockerfile
+    autoDeploy: true
+    healthCheckPath: /api/system-status
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: HOST
+        value: 0.0.0.0
