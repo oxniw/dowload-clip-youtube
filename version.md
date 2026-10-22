@@ -13,3 +13,4 @@
 - Cloud deployment configurations for Render (`Dockerfile`, `render.yaml`) and Vercel (`vercel.json`, `asgi.py`).
 - Dynamic port and host binding reading `PORT` and `HOST` environment variables.
 - Dynamic storage resolution defaulting to `/tmp/downloads` in serverless environments.
+- Initialized Git tracking and published codebase to GitHub repository: `oxniw/dowload-clip-youtube`.
