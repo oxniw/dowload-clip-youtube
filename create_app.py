@@ -175,7 +175,7 @@ def create_app() -> FastAPI:
     def api_list_downloads():
         files = []
         for p in DOWNLOADS_DIR.iterdir():
-            if p.is_file():
+            if p.is_file() and p.name != ".gitkeep":
                 files.append(
                     {
                         "filename": p.name,

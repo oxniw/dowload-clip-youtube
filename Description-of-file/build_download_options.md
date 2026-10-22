@@ -18,6 +18,6 @@ Constructs a sanitized options dictionary for `yt-dlp` based on requested audio/
   - **Returns**: Dictionary formatted for `yt_dlp.YoutubeDL`.
 
 ## Dependencies & Data Flow
-- **Imports**: `config.DOWNLOADS_DIR`, `config.SUPPORTED_AUDIO_FORMATS`, `config.SUPPORTED_VIDEO_FORMATS`.
+- **Imports**: `config.COOKIES_FILE`, `config.DOWNLOADS_DIR`, `config.SUPPORTED_AUDIO_FORMATS`, `config.SUPPORTED_VIDEO_FORMATS`.
 - **Invoked By**: `execute_download.py`.
-- **Data Flow**: High-level job specifications -> validated `yt-dlp` configuration dictionary.
+- **Data Flow**: High-level job specifications -> validated `yt-dlp` configuration dictionary with `android`/`ios` client rotation.

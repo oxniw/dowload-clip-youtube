@@ -38,6 +38,7 @@ ALLOWED_DOMAINS = (
 ALLOWED_SCHEMES = ("https", "http")
 
 # Format Options
+COOKIES_FILE = BASE_DIR / "cookies.txt"
 SUPPORTED_VIDEO_FORMATS = ("mp4", "mkv")
 SUPPORTED_AUDIO_FORMATS = ("mp3", "m4a", "wav", "flac")
 SUPPORTED_QUALITIES = ("best", "1080", "720", "480", "360")

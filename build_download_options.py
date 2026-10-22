@@ -5,7 +5,7 @@
 
 from typing import Any, Callable, Dict, Optional
 from pathlib import Path
-from config import DOWNLOADS_DIR, SUPPORTED_AUDIO_FORMATS, SUPPORTED_VIDEO_FORMATS
+from config import COOKIES_FILE, DOWNLOADS_DIR, SUPPORTED_AUDIO_FORMATS, SUPPORTED_VIDEO_FORMATS
 
 
 def build_download_options(
@@ -31,7 +31,15 @@ def build_download_options(
         "restrictfilenames": True,
         "windowsfilenames": True,
         "noplaylist": True,
+        "extractor_args": {
+            "youtube": {
+                "player_client": ["android", "ios", "web"]
+            }
+        },
     }
+
+    if COOKIES_FILE.exists():
+        opts["cookiefile"] = str(COOKIES_FILE)
 
     if progress_hook:
         opts["progress_hooks"] = [progress_hook]

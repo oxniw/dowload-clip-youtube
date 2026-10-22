@@ -11,6 +11,7 @@ Stores application-wide configuration constants, file paths, format whitelists, 
 - `DEFAULT_PORT: int`: Server port reading from the `PORT` environment variable (default: `8000`).
 - `ALLOWED_DOMAINS: Tuple[str, ...]`: Whitelist of permitted YouTube domain names to prevent SSRF attacks.
 - `ALLOWED_SCHEMES: Tuple[str, ...]`: Whitelist of valid network schemes (`https`, `http`).
+- `COOKIES_FILE: Path`: Path to optional `cookies.txt` file for authenticated YouTube requests.
 - `SUPPORTED_VIDEO_FORMATS: Tuple[str, ...]`: Allowed output video containers (`mp4`, `mkv`).
 - `SUPPORTED_AUDIO_FORMATS: Tuple[str, ...]`: Allowed audio codecs (`mp3`, `m4a`, `wav`, `flac`).
 - `SUPPORTED_QUALITIES: Tuple[str, ...]`: Supported resolution height filters.

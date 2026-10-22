@@ -16,6 +16,6 @@ Inspects a YouTube video using `yt-dlp` to extract metadata without downloading 
   - **Returns**: Dictionary with video metadata and resolution heights.
 
 ## Dependencies & Data Flow
-- **Imports**: `yt_dlp`, `validate_url.validate_url`.
+- **Imports**: `yt_dlp`, `config.COOKIES_FILE`, `validate_url.validate_url`.
 - **Invoked By**: `create_app.py` (`POST /api/info`).
-- **Data Flow**: YouTube URL -> `yt_dlp.YoutubeDL` metadata probe -> structured dictionary sent to frontend.
+- **Data Flow**: YouTube URL -> `yt_dlp.YoutubeDL` with `android`/`ios` client rotation -> structured dictionary sent to frontend.

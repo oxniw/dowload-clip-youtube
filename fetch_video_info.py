@@ -5,6 +5,7 @@
 
 from typing import Any, Dict, List
 import yt_dlp
+from config import COOKIES_FILE
 from validate_url import validate_url
 
 
@@ -32,7 +33,15 @@ def fetch_video_info(url: str) -> Dict[str, Any]:
         "no_warnings": True,
         "extract_flat": False,
         "skip_download": True,
+        "extractor_args": {
+            "youtube": {
+                "player_client": ["android", "ios", "web"]
+            }
+        },
     }
+
+    if COOKIES_FILE.exists():
+        ydl_opts["cookiefile"] = str(COOKIES_FILE)
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(clean_url, download=False)
@@ -43,9 +52,12 @@ def fetch_video_info(url: str) -> Dict[str, Any]:
         available_heights = set()
         for f in raw_formats:
             height = f.get("height")
-            vcodec = f.get("vcodec")
-            if height and vcodec and vcodec != "none":
+            if height and height >= 144:
                 available_heights.add(height)
+
+        # Ensure standard options are available for selection
+        for h in (1080, 720, 480, 360):
+            available_heights.add(h)
 
         sorted_heights = sorted(list(available_heights), reverse=True)
 
